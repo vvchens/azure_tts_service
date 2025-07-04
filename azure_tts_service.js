@@ -1,6 +1,6 @@
 "use strict";
 
-assert(process.env.APIKEY)
+//assert(process.env.APIKEY)
 
 const sdk = require("microsoft-cognitiveservices-speech-sdk");
 
@@ -8,7 +8,7 @@ const speechConfig = sdk.SpeechConfig.fromSubscription(process.env.APIKEY, "east
 // const audioConfig = sdk.AudioConfig.fromAudioFileOutput(audioFile);
 
 // The language of the voice that speaks.
-speechConfig.speechSynthesisVoiceName = "zh-CN-XiaoxiaoNeural";
+// speechConfig.speechSynthesisVoiceName = "zh-CN-XiaoxiaoNeural";
 // zh-CN-XiaoxiaoNeural (Female)
 // zh-CN-YunxiNeural (Male)
 // zh-CN-YunjianNeural (Male)
@@ -41,9 +41,12 @@ class handler extends sdk.PushAudioOutputStreamCallback {
     }
 }
 
-function azure_tts(text, outputBuffer) {
+// 支持传入 voiceName 参数
+function azure_tts(text, outputBuffer, voiceName = "zh-CN-XiaoxiaoNeural") {
     return new Promise((res, rej) => {
         console.log(`synthesising "${text}"`);
+        // 设置 voiceName
+        speechConfig.speechSynthesisVoiceName = voiceName;
         // Create the speech synthesizer.
         var audioConfig = sdk.AudioConfig.fromStreamOutput(new handler((buffer) => {
             outputBuffer(buffer)
